@@ -19,5 +19,13 @@
 		</property>
 		<!--  default properties must be set in the hibernate.default.properties -->
 	</bean>
+
+    <bean id="test.descriptor1" class="org.openmrs.module.distrotools.test.TestDescriptor">
+        <property name="order" value="3" />
+    </bean>
+
+    <bean id="test.descriptor2" class="org.openmrs.module.distrotools.test.TestDescriptor">
+        <property name="order" value="2" />
+    </bean>
 	
 </beans>

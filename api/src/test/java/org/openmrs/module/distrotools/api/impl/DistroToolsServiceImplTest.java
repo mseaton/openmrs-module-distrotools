@@ -24,8 +24,11 @@ import org.openmrs.Program;
 import org.openmrs.Role;
 import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.distrotools.api.DistroToolsService;
+import org.openmrs.module.distrotools.chore.AbstractChore;
+import org.openmrs.module.distrotools.chore.Chore;
 import org.openmrs.module.distrotools.metadata.MetadataUtils;
 import org.openmrs.module.distrotools.metadata.bundle.AbstractMetadataBundle;
 import org.openmrs.module.distrotools.metadata.bundle.MetadataBundle;
@@ -37,6 +40,7 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.contains;
@@ -61,6 +65,9 @@ public class DistroToolsServiceImplTest extends BaseModuleContextSensitiveTest {
 	private DistroToolsService distroToolsService;
 
 	@Autowired
+	private AdministrationService adminService;
+
+	@Autowired
 	private TestBundle1 testBundle1;
 
 	@Autowired
@@ -70,7 +77,7 @@ public class DistroToolsServiceImplTest extends BaseModuleContextSensitiveTest {
 	private TestBundle3 testBundle3;
 
 	@Autowired
-	private TestBundle6 testBundle6;
+	private TestChore testChore;
 
 	/**
 	 * @see DistroToolsServiceImpl#installBundles(java.util.Collection)
@@ -106,7 +113,7 @@ public class DistroToolsServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test(expected = APIException.class)
 	public void installBundles_shouldThrowAPIExceptionIfBundleThrowsAnyException() {
-		distroToolsService.installBundles(Arrays.<MetadataBundle>asList(testBundle6));
+		distroToolsService.installBundles(Arrays.<MetadataBundle>asList(new TestBundle6()));
 	}
 
 	/**
@@ -238,6 +245,17 @@ public class DistroToolsServiceImplTest extends BaseModuleContextSensitiveTest {
 		impl.getHandler(Patient.class);
 	}
 
+	/**
+	 * @see DistroToolsServiceImpl#performChore(Chore)
+	 */
+	@Test
+	public void performChore() {
+		distroToolsService.performChore(testChore);
+
+		Assert.assertThat(testChore.done, is(true));
+		Assert.assertThat(adminService.getGlobalProperty("test.chore.done"), is("true"));
+	}
+
 	@Component
 	public static class TestBundle1 extends AbstractMetadataBundle {
 		@Override
@@ -291,11 +309,24 @@ public class DistroToolsServiceImplTest extends BaseModuleContextSensitiveTest {
 	/**
 	 * Throws an NPE on install
 	 */
-	@Component
 	public static class TestBundle6 extends AbstractMetadataBundle {
 		@Override
 		public void install() {
 			throw new NullPointerException();
+		}
+	}
+
+	/**
+	 * Chore component for testing
+	 */
+	@Component("test.chore")
+	public static class TestChore extends AbstractChore {
+
+		public boolean done = false;
+
+		@Override
+		public void perform(PrintWriter output) {
+			done = true;
 		}
 	}
 
