@@ -12,25 +12,16 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.metadatadeploy.sync;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.openmrs.Location;
-
-import static org.hamcrest.Matchers.*;
+package org.openmrs.module.distrotools;
 
 /**
- * Tests for {@link SyncResult}
+ * Top-level interface for all descriptors
  */
-public class SyncResultTest {
+public interface Descriptor {
 
-	@Test
-	public void integration() {
-		SyncResult<Location> result = new SyncResult<Location>();
-
-		Assert.assertThat(result.getCreated(), hasSize(0));
-		Assert.assertThat(result.getUpdated(), hasSize(0));
-		Assert.assertThat(result.getRetired(), hasSize(0));
-	}
+	/**
+	 * Gets the id
+	 * @return the id
+	 */
+	String getId();
 }

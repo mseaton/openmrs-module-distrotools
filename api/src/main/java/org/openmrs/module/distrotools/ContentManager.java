@@ -12,24 +12,21 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.metadatadeploy;
-
-import org.junit.Test;
-import org.openmrs.module.ModuleActivator;
+package org.openmrs.module.distrotools;
 
 /**
- * Tests for {@link MetadataDeployActivator}
+ * Interface for all content managers
  */
-public class MetadataDeployActivatorTest {
+public interface ContentManager {
 
-	@Test
-	public void integration() {
-		ModuleActivator activator = new MetadataDeployActivator();
-		activator.willStart();
-		activator.started();
-		activator.willRefreshContext();
-		activator.contextRefreshed();
-		activator.willStop();
-		activator.stopped();
-	}
+	/**
+	 * Gets the priority value to determine refresh order
+	 * @return the priority value
+	 */
+	int getPriority();
+
+	/**
+	 * Refreshes the manager after a content refresh
+	 */
+	void refresh();
 }

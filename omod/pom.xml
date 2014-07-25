@@ -3,14 +3,14 @@
 
 	<parent>
 		<groupId>org.openmrs.module</groupId>
-		<artifactId>metadatadeploy</artifactId>
-		<version>1.3-SNAPSHOT</version>
+		<artifactId>distrotools</artifactId>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>metadatadeploy-omod</artifactId>
+	<artifactId>distrotools-omod</artifactId>
 	<packaging>jar</packaging>
-	<name>Metadata Deploy OMOD</name>
-	<description>OMOD project for metadatadeploy</description>
+	<name>Distro Tools OMOD</name>
+	<description>OMOD project for distrotools</description>
 
 	<dependencies>
 		<dependency>
