@@ -28,28 +28,20 @@ import java.util.List;
  * Base abstract class that dependent modules can extend, which ensure that the included tools are run,
  * including ContentManagers in the appropriate order
  */
-public abstract class BaseDistributionModuleActivator extends BaseModuleActivator {
+public class ContentManagerUtil extends BaseModuleActivator {
 
-	protected static final Log log = LogFactory.getLog(BaseDistributionModuleActivator.class);
-
-	private static boolean refreshed = false;
-
-	@Override
-	public void contextRefreshed() {
-		refreshContentManagers();
-	}
+	protected static final Log log = LogFactory.getLog(ContentManagerUtil.class);
 
 	/**
-	 * Refresh all content
+	 * Refresh all content managers of a particular type by priority within that type
 	 */
-	public synchronized void refreshContentManagers() {
-		refreshed = false;
+	public static synchronized <T extends ContentManager> void refreshContentManagers(Class<T> contentManagerType) {
 
 		long start = System.currentTimeMillis();
-		log.info("Refreshing all content managers...");
+		log.info("Refreshing all content managers of type: " + contentManagerType.getSimpleName());
 
-		List<ContentManager> contentManagers = Context.getRegisteredComponents(ContentManager.class);
-		log.info("Found " + contentManagers + " content managers to refresh");
+		List<T> contentManagers = Context.getRegisteredComponents(contentManagerType);
+		log.info("Found " + contentManagers.size() + " to refresh");
 
 		Collections.sort(contentManagers, new Comparator<ContentManager>() {
 			@Override
@@ -65,16 +57,6 @@ public abstract class BaseDistributionModuleActivator extends BaseModuleActivato
 		}
 
 		long time = System.currentTimeMillis() - start;
-		log.info("Refreshed all content managers in " + time + "ms");
-
-		refreshed = true;
-	}
-
-	/**
-	 * @return true if all content is successfully refreshed
-	 *
-	 */
-	public static  boolean isRefreshed() {
-		return refreshed;
+		log.info("Refreshed content managers of type " + contentManagerType + " in " + time + "ms");
 	}
 }
